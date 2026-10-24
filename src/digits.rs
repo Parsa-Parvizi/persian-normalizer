@@ -12,25 +12,43 @@
 
 use alloc::borrow::Cow;
 
-use crate::DigitStyle;
+use crate::{DigitStyle, chars, util};
 
 /// Converts every digit in `text` to the given [`DigitStyle`].
 ///
-/// [`DigitStyle::Keep`] returns the input unchanged. Returns
-/// [`Cow::Borrowed`] when no digit needs converting.
+/// Digits from any of the three supported sets are converted, so mixed input
+/// ends up in a single numeral system. [`DigitStyle::Keep`] returns the input
+/// unchanged. Returns [`Cow::Borrowed`] when no digit needs converting.
+///
+/// Note that this also converts digits inside identifiers, URLs and code,
+/// because the function has no notion of context.
 ///
 /// # Examples
 ///
-/// ```ignore
-/// // TODO(step-4): enable this example once `convert` is implemented.
+/// ```
 /// use persian_normalizer::{digits, DigitStyle};
 ///
-/// assert_eq!(digits::convert("123 ٤٥٦", DigitStyle::Persian), "۱۲۳ ۴۵۶");
-/// assert_eq!(digits::convert("۱۲۳", DigitStyle::Latin), "123");
+/// // Persian digits 1 2 3 (U+06F1..U+06F3) become Latin "123".
+/// assert_eq!(digits::convert("\u{06F1}\u{06F2}\u{06F3}", DigitStyle::Latin), "123");
+///
+/// // Latin "123" becomes Persian digits.
+/// assert_eq!(
+///     digits::convert("123", DigitStyle::Persian),
+///     "\u{06F1}\u{06F2}\u{06F3}",
+/// );
 /// ```
 #[must_use]
 pub fn convert(text: &str, style: DigitStyle) -> Cow<'_, str> {
-    // TODO(step-4): implement.
-    let _ = style;
-    Cow::Borrowed(text)
+    let zero = match style {
+        DigitStyle::Persian => chars::PERSIAN_ZERO,
+        DigitStyle::Arabic => chars::ARABIC_INDIC_ZERO,
+        DigitStyle::Latin => chars::LATIN_ZERO,
+        DigitStyle::Keep => return Cow::Borrowed(text),
+    };
+
+    util::map_chars(text, |c| {
+        chars::digit_value(c)
+            .and_then(|value| char::from_u32(zero + value))
+            .unwrap_or(c)
+    })
 }
