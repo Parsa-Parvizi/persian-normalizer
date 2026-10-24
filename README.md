@@ -6,7 +6,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/persian-normalizer.svg)](https://crates.io/crates/persian-normalizer)
 [![Docs.rs](https://docs.rs/persian-normalizer/badge.svg)](https://docs.rs/persian-normalizer)
-[![CI](https://github.com/<your-username>/persian-normalizer/actions/workflows/ci.yml/badge.svg)](https://github.com/<your-username>/persian-normalizer/actions/workflows/ci.yml)
+[![CI](https://github.com/Parsa-Parvizi/persian-normalizer/actions/workflows/ci.yml/badge.svg)](https://github.com/Parsa-Parvizi/persian-normalizer/actions/workflows/ci.yml)
 [![MSRV](https://img.shields.io/badge/MSRV-1.75-blue.svg)](#minimum-supported-rust-version)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](#license)
 
