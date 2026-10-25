@@ -32,7 +32,7 @@ them would break the "small, dependency-free" promise.
 - Tokenization and sentence splitting
 - Stemming and lemmatization
 - Spell correction
-- Transliteration and Finglish conversion
+- Transliteration and Chinglish conversion
 - Entity recognition and validators (national ID, IBAN, ...)
 - Calendar and date handling
 - Number-to-words conversion
@@ -142,14 +142,14 @@ would add noise with nothing to report.
 
 ### D-08: Defaults
 
-| Step | Default |
-|---|---|
-| Letters (Arabic to Persian) | on |
-| Diacritics and tatweel removal | on |
-| Digits | `DigitStyle::Persian` |
-| Space and ZWNJ cleanup | on |
-| Smart ZWNJ insertion | off |
-| Persian punctuation | off |
+| Step                           | Default               |
+|--------------------------------|-----------------------|
+| Letters (Arabic to Persian)    | on                    |
+| Diacritics and tatweel removal | on                    |
+| Digits                         | `DigitStyle::Persian` |
+| Space and ZWNJ cleanup         | on                    |
+| Smart ZWNJ insertion           | off                   |
+| Persian punctuation            | off                   |
 
 **Rationale:** Defaults match what most Persian NLP tooling (notably Hazm)
 does, so results are familiar. Heuristic or context-dependent steps are opt-in
@@ -164,14 +164,14 @@ values are final for the 0.x series unless a new record supersedes this one.
 
 **Decision:**
 
-| From | To |
-|---|---|
+| From       | To         |
+|------------|------------|
 | `ي` U+064A | `ی` U+06CC |
 | `ى` U+0649 | `ی` U+06CC |
 | `ك` U+0643 | `ک` U+06A9 |
 | `ة` U+0629 | `ه` U+0647 |
 
-Alef and hamza variants (`أ`, `إ`, `ٱ`, `ؤ`, `ئ`) are **not** unified.
+Alef and Hamza variants (`أ`, `إ`, `ٱ`, `ؤ`, `ئ`) are **not** unified.
 **Rationale:** Those characters carry meaning in Persian words and an
 automatic merge would damage valid text. They can become opt-in later.
 
@@ -194,7 +194,7 @@ context-dependent and deferred.
 
 **Decision:** Collapse runs of the space character (U+0020) into one space. Tabs,
 newlines and no-break spaces are left unchanged. The text is not trimmed.
-**Rationale:** Conservative behavior avoids surprising callers who rely on line
+**Rationale:** Conservative behavior avoids surprising callers who rely on online
 structure. Callers can call `.trim()` themselves.
 
 ### D-13: ZWNJ cleanup rules
@@ -303,7 +303,7 @@ guarantees above take priority.
   once offline and checked in with a note about its origin. Running the tests
   never requires Python.
 - A `cargo-fuzz` target for the full pipeline.
-- Coverage is measured with `cargo-llvm-cov`; the goal is high coverage but it
+- Coverage is measured with `cargo-llvm-cov`; the goal is high coverage, but it
   is not a hard gate until the code stabilizes.
 
 ### D-24: Documentation standard

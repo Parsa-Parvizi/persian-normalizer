@@ -18,7 +18,7 @@ Report privately using one of these channels:
 
 1. **GitHub private vulnerability reporting (preferred):** open the repository's
    **Security** tab and choose **Report a vulnerability**.
-2. **Email:** `<SECURITY-EMAIL>` with the subject line
+2. **Email:** `parsa.dev.python@gmail.com` with the subject line
    `[persian-normalizer] security report`.
 
 Please include:
