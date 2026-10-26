@@ -1,0 +1,36 @@
+# cargo-deny configuration for persian-normalizer.
+#
+# Run locally with:   cargo deny check
+# Runs in CI via:     .github/workflows/audit.yml
+#
+# The crate has no runtime dependencies in the default build; `serde` is the
+# only optional one. Dev-dependencies (proptest, criterion, ...) are excluded
+# from the graph because they are never shipped to users.
+
+[graph]
+all-features = true
+exclude-dev = true
+
+[advisories]
+# Defaults: known vulnerabilities are errors; unmaintained and yanked crates
+# produce warnings.
+
+[licenses]
+# Only permissive licenses are accepted. If `cargo deny check licenses` reports
+# a license you consider acceptable (for example for a transitive dependency of
+# `serde`), add its SPDX identifier here.
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Unicode-3.0",
+]
+confidence-threshold = 0.93
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+
+[sources]
+# Only crates.io (the default registry) is allowed.
+unknown-registry = "deny"
+unknown-git = "deny"
