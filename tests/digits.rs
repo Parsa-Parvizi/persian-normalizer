@@ -2,7 +2,7 @@
 
 use std::borrow::Cow;
 
-use persian_normalizer::{DigitStyle, digits};
+use persian_normalizer::{digits, DigitStyle};
 
 const LATIN_ZERO: u32 = 0x0030;
 const ARABIC_INDIC_ZERO: u32 = 0x0660;
@@ -64,8 +64,8 @@ fn mixed_numeral_systems_end_up_in_one_style() {
         digit(ARABIC_INDIC_ZERO, 2),
         digit(PERSIAN_ZERO, 3),
     ]
-        .iter()
-        .collect();
+    .iter()
+    .collect();
     assert_eq!(digits::convert(&input, DigitStyle::Latin), "123");
 }
 
@@ -79,7 +79,10 @@ fn separators_and_other_text_are_untouched() {
         digit(PERSIAN_ZERO, 2),
         digit(PERSIAN_ZERO, 3),
     );
-    assert_eq!(digits::convert(input, DigitStyle::Persian), expected.as_str());
+    assert_eq!(
+        digits::convert(input, DigitStyle::Persian),
+        expected.as_str()
+    );
 }
 
 #[test]
