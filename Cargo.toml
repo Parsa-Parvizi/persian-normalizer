@@ -10,7 +10,18 @@ repository = "https://github.com/Parsa-Parvizi/persian-normalizer"
 documentation = "https://docs.rs/persian-normalizer"
 keywords = ["persian", "farsi", "normalization", "text-processing", "unicode"]
 categories = ["text-processing", "internationalization", "no-std"]
-exclude = [".github/", "fuzz/", "tests/fixtures/", "deny.toml", "clippy.toml"]
+exclude = [
+    ".github/",
+    "fuzz/",
+    "tests/fixtures/",
+    "tests/consumer_e2e.rs",
+    "deny.toml",
+    "clippy.toml",
+    "rustfmt.toml",
+    "rust-toolchain.toml",
+    ".editorconfig",
+    ".gitignore",
+]
 
 [features]
 default = ["std"]

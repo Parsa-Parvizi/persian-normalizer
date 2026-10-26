@@ -6,7 +6,7 @@ use alloc::string::String;
 /// Applies one normalization `step` to `input`, keeping the zero-copy fast path.
 ///
 /// If the step reports no change (returns `Cow::Borrowed`), the original `input`
-/// is returned untouched, preserving its lifetime. Otherwise the step's owned
+/// is returned untouched, preserving its lifetime. Otherwise, the step's owned
 /// output replaces it.
 pub(crate) fn apply<F>(input: Cow<'_, str>, step: F) -> Cow<'_, str>
 where
@@ -29,7 +29,7 @@ where
 /// Maps every character of `text` through `map`.
 ///
 /// Scans for the first character that `map` would change. If there is none,
-/// returns `text` borrowed. Otherwise allocates exactly once, copies the
+/// returns `text` borrowed. Otherwis,e allocates exactly once, copies the
 /// unchanged prefix and maps the rest.
 ///
 /// `map` must be a pure function: the same input character always yields the
@@ -54,7 +54,7 @@ where
 /// Keeps only the characters of `text` for which `keep` returns `true`.
 ///
 /// Scans for the first character that would be removed. If there is none,
-/// returns `text` borrowed. Otherwise allocates exactly once.
+/// returns `text` borrowed. Otherwi,se allocates exactly once.
 ///
 /// `keep` must be a pure function.
 pub(crate) fn filter_chars<F>(text: &str, keep: F) -> Cow<'_, str>
