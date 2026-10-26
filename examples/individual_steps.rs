@@ -7,7 +7,7 @@
 
 use std::borrow::Cow;
 
-use persian_normalizer::{DigitStyle, diacritics, digits, letters, punctuation, spacing};
+use persian_normalizer::{diacritics, digits, letters, punctuation, spacing, DigitStyle};
 
 /// Describes whether a result reused the input or allocated a new string.
 #[allow(
