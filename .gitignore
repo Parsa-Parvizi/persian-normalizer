@@ -4,3 +4,4 @@
 /fuzz/artifacts
 .idea/
 *.iml
+tests/Consumere2e.rs
