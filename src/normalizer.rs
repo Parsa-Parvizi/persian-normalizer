@@ -106,11 +106,14 @@ impl Normalizer {
             let style = self.digits;
             out = util::apply(out, |s| digits::convert(s, style));
         }
-        if self.punctuation {
-            out = util::apply(out, punctuation::normalize);
-        }
+        // Spacing cleanup must run before the punctuation step: punctuation
+        // looks at the character before a mark, and cleanup can remove a ZWNJ
+        // that sits between a letter and a mark.
         if self.fix_spacing {
             out = util::apply(out, spacing::clean);
+        }
+        if self.punctuation {
+            out = util::apply(out, punctuation::normalize);
         }
         if self.smart_zwnj {
             out = util::apply(out, spacing::smart_zwnj);

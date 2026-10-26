@@ -51,6 +51,29 @@ where
     Cow::Owned(out)
 }
 
+/// Keeps only the characters of `text` for which `keep` returns `true`.
+///
+/// Scans for the first character that would be removed. If there is none,
+/// returns `text` borrowed. Otherwise allocates exactly once.
+///
+/// `keep` must be a pure function.
+pub(crate) fn filter_chars<F>(text: &str, keep: F) -> Cow<'_, str>
+where
+    F: Fn(char) -> bool,
+{
+    let Some((first_removed, _)) = text.char_indices().find(|&(_, c)| !keep(c)) else {
+        return Cow::Borrowed(text);
+    };
+
+    // `first_removed` comes from `char_indices`, so it is always a valid boundary.
+    let (kept, rest) = text.split_at(first_removed);
+
+    let mut out = String::with_capacity(text.len());
+    out.push_str(kept);
+    out.extend(rest.chars().filter(|&c| keep(c)));
+    Cow::Owned(out)
+}
+
 #[cfg(test)]
 #[allow(
     clippy::redundant_closure,
@@ -103,5 +126,32 @@ mod tests {
     fn map_chars_handles_change_in_first_position() {
         let out = map_chars("xabc", |c| if c == 'x' { 'y' } else { c });
         assert_eq!(out, "yabc");
+    }
+
+    #[test]
+    fn filter_chars_borrows_when_nothing_is_removed() {
+        assert!(matches!(
+            filter_chars("abc", |_| true),
+            Cow::Borrowed("abc")
+        ));
+        assert!(matches!(filter_chars("", |_| true), Cow::Borrowed("")));
+    }
+
+    #[test]
+    fn filter_chars_removes_every_unwanted_character() {
+        let out = filter_chars("a-b-c", |c| c != '-');
+        assert!(matches!(out, Cow::Owned(_)));
+        assert_eq!(out, "abc");
+    }
+
+    #[test]
+    fn filter_chars_is_safe_with_multibyte_text() {
+        let out = filter_chars("é😀x😀é", |c| c != 'x');
+        assert_eq!(out, "é😀😀é");
+    }
+
+    #[test]
+    fn filter_chars_can_remove_everything() {
+        assert_eq!(filter_chars("---", |c| c != '-'), "");
     }
 }

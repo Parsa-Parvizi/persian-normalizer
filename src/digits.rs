@@ -12,7 +12,7 @@
 
 use alloc::borrow::Cow;
 
-use crate::{DigitStyle, chars, util};
+use crate::{chars, util, DigitStyle};
 
 /// Converts every digit in `text` to the given [`DigitStyle`].
 ///
