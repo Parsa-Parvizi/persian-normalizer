@@ -26,16 +26,16 @@ fn main() {
     // Build the index: normalized token -> ids of the documents containing it.
     let mut index: HashMap<String, Vec<&'static str>> = HashMap::new();
     for (id, text) in documents {
-        let normalized = normalizer.normalize(text);
-        for token in normalized.split_whitespace() {
+        let canonical = normalizer.normalize(text);
+        for token in canonical.split_whitespace() {
             index.entry(token.to_owned()).or_default().push(id);
         }
     }
 
     // Search: normalize the query exactly like the documents.
     let search = |query: &str| -> Vec<&'static str> {
-        let normalized = normalizer.normalize(query);
-        index.get(&*normalized).cloned().unwrap_or_default()
+        let canonical = normalizer.normalize(query);
+        index.get(&*canonical).cloned().unwrap_or_default()
     };
 
     // An Arabic-kaf query finds both the Arabic and the Persian spelling.

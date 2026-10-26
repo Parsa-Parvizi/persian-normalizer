@@ -34,6 +34,22 @@ fn main() {
     println!("keep letters     : {out}");
     assert_eq!(out, "كتاب ۱۲۳");
 
+    // Diacritics are removed by default. Disable that for text where they
+    // matter. Here: "ک" + kasra (U+0650) + "ت".
+    let marked = "ک\u{0650}ت";
+    assert_eq!(default.normalize(marked), "کت");
+    let keep_marks = Normalizer::builder().remove_diacritics(false).build();
+    assert_eq!(keep_marks.normalize(marked), marked);
+
+    // Opt-in steps: ZWNJ insertion and Persian punctuation.
+    let full = Normalizer::builder()
+        .smart_zwnj(true)
+        .punctuation(true)
+        .build();
+    let out = full.normalize("می روم, کتاب ها?");
+    println!("opt-in steps     : {out}");
+    assert_eq!(out, "می\u{200C}روم، کتاب\u{200C}ها؟");
+
     // A normalizer is reusable: build once, apply to many inputs.
     let inputs = ["علي", "ايران", "کتاب"];
     let normalized: Vec<_> = inputs
