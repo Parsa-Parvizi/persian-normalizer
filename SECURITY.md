@@ -5,10 +5,10 @@
 `persian-normalizer` is in the `0.x` series. Security fixes are released for the
 **latest published minor version** only.
 
-| Version | Supported |
-|---|:---:|
-| Latest `0.x` release | yes |
-| Older releases | no |
+| Version              | Supported |
+|----------------------|:---------:|
+| Latest `0.x` release |    yes    |
+| Older releases       |    no     |
 
 ## Reporting a vulnerability
 

@@ -10,17 +10,16 @@ and must be listed in `CHANGELOG.md`.
 
 **Implementation status (version 0.1, in development):**
 
-| Section                   | Status                         |
-|---------------------------|--------------------------------|
-| 1. Letters                | Implemented and tested         |
-| 2. Digits                 | Implemented and tested         |
-| 3. Diacritics and tatweel | Specified, not yet implemented |
-| 4. Spacing and ZWNJ       | Specified, not yet implemented |
-| 5. Punctuation            | Specified, not yet implemented |
+| Section                   | Status                 |
+|---------------------------|------------------------|
+| 1. Letters                | Implemented and tested |
+| 2. Digits                 | Implemented and tested |
+| 3. Diacritics and tatweel | Implemented and tested |
+| 4. Spacing and ZWNJ       | Implemented and tested |
+| 5. Punctuation            | Implemented and tested |
 
-Sections marked "not yet implemented" describe the intended behavior from the
-decision records. They will be updated, and the status above changed, as each
-step lands.
+The comparison with other tools (section 6) is still incomplete; see 6.3 for
+what has and has not been verified.
 
 Notation: `U+XXXX` is a Unicode code point. In tests and bug reports, always
 write non-ASCII characters as escapes such as `\u{0643}`, because Arabic and
@@ -86,7 +85,7 @@ is on the roadmap.
 
 ---
 
-## 3. Diacritics and tatweel (`diacritics::strip`) — not yet implemented
+## 3. Diacritics and tatweel (`diacritics::strip`)
 
 Decision: D-10. These code points are removed:
 
@@ -109,7 +108,7 @@ see D-08 for the rationale and the builder option to disable it.
 
 ---
 
-## 4. Spacing and ZWNJ — not yet implemented
+## 4. Spacing and ZWNJ
 
 ### 4.1 `spacing::clean` (decisions D-12 and D-13)
 
@@ -125,17 +124,22 @@ join to the next letter.
 
 ### 4.2 `spacing::smart_zwnj` (decision D-14, opt-in)
 
-Version 0.1 handles only:
+A single space (U+0020) between two words, where a word is a maximal run of
+Persian letters, becomes a ZWNJ when:
 
-- the verb prefixes `می` and `نمی` followed by a word,
-- the plural suffixes `ها` and `های` preceded by a word.
+- the word before it is `می` or `نمی` (Persian or Arabic yeh) and the word after
+  it has at least two letters, or
+- the word after it is `ها` or `های` and the word before it has at least two
+  letters.
 
+Whole words only: `ها` at the start of a longer word does not count. A
+one-letter word never triggers a join, so `می و` ("wine and") is left alone.
 There is no dictionary. The rules are heuristic; a rule that cannot be made
 idempotent and free of obvious false positives is removed rather than shipped.
 
 ---
 
-## 5. Punctuation (`punctuation::normalize`) — not yet implemented
+## 5. Punctuation (`punctuation::normalize`)
 
 Decision: D-15, opt-in.
 
@@ -145,8 +149,13 @@ Decision: D-15, opt-in.
 | `;` U+003B | `؛` U+061B |
 | `?` U+003F | `؟` U+061F |
 
-A mark is replaced only when the preceding non-space character is a
-Persian-script letter. Numbers such as `1,234`, code and URLs are unaffected.
+A mark is replaced only when the preceding character, ignoring spaces
+(U+0020), is a Persian-script letter. Numbers such as `1,234`, code and URLs
+are unaffected. A converted mark is not a letter, so it never enables the
+conversion of the mark after it.
+
+In the pipeline this step runs **after** `spacing::clean` (D-29), because
+cleanup can remove a ZWNJ that sits between a letter and a mark.
 
 ---
 

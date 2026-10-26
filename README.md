@@ -28,15 +28,15 @@ larger tools build on.
 
 ### Why this crate?
 
-| Principle | What it means |
-|---|---|
-| **Zero-copy when possible** | Every step returns `Cow<str>`. If the input is already normalized, nothing is allocated. |
-| **Dependency-free core** | No `regex`, no heavy Unicode tables. Only `serde` is available, and only behind a feature flag. |
-| **Idempotent** | `normalize(normalize(x)) == normalize(x)`. Enforced by property-based tests. |
-| **Never panics** | Total functions over all valid `&str` input. Covered by fuzzing. |
-| **Composable** | Use the one-line `normalize()` or pick individual steps. |
-| **`no_std` ready** | Works with `alloc` only. Disable the default `std` feature. |
-| **Conventional API** | Designed against the [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/). |
+| Principle                   | What it means                                                                                   |
+|-----------------------------|-------------------------------------------------------------------------------------------------|
+| **Zero-copy when possible** | Every step returns `Cow<str>`. If the input is already normalized, nothing is allocated.        |
+| **Dependency-free core**    | No `regex`, no heavy Unicode tables. Only `serde` is available, and only behind a feature flag. |
+| **Idempotent**              | `normalize(normalize(x)) == normalize(x)`. Enforced by property-based tests.                    |
+| **Never panics**            | Total functions over all valid `&str` input. Covered by fuzzing.                                |
+| **Composable**              | Use the one-line `normalize()` or pick individual steps.                                        |
+| **`no_std` ready**          | Works with `alloc` only. Disable the default `std` feature.                                     |
+| **Conventional API**        | Designed against the [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/).        |
 
 ### Installation
 
@@ -107,24 +107,24 @@ assert_eq!(diacritics::strip("ک\u{0650}تاب"), "کتاب");
 
 ### What it normalizes
 
-| Step | Module | Default | Examples |
-|---|---|:---:|---|
-| Arabic → Persian letters | `letters` | on | `ي` → `ی`, `ك` → `ک`, `ى` → `ی`, `ة` → `ه` |
-| Digit unification | `digits` | on (`Persian`) | `123`, `١٢٣`, `۱۲۳` ⇄ any one script |
-| Diacritics and tatweel | `diacritics` | on | removes U+064B–U+0652, U+0670 and U+0640 (`ـ`) |
-| Spacing and ZWNJ cleanup | `spacing` | on | collapses repeated spaces; removes ZWNJ at word edges, next to spaces and when repeated |
-| Smart ZWNJ insertion | `spacing` | **off** | `می روم` → `می‌روم`, `کتاب ها` → `کتاب‌ها` |
-| Punctuation | `punctuation` | **off** | `,` → `،`, `;` → `؛`, `?` → `؟` (only next to Persian-script letters, so `1,234` is untouched) |
+| Step                     | Module        |    Default     | Examples                                                                                       |
+|--------------------------|---------------|:--------------:|------------------------------------------------------------------------------------------------|
+| Arabic → Persian letters | `letters`     |       on       | `ي` → `ی`, `ك` → `ک`, `ى` → `ی`, `ة` → `ه`                                                     |
+| Digit unification        | `digits`      | on (`Persian`) | `123`, `١٢٣`, `۱۲۳` ⇄ any one script                                                           |
+| Diacritics and tatweel   | `diacritics`  |       on       | removes U+064B–U+0652, U+0670 and U+0640 (`ـ`)                                                 |
+| Spacing and ZWNJ cleanup | `spacing`     |       on       | collapses repeated spaces; removes ZWNJ at word edges, next to spaces and when repeated        |
+| Smart ZWNJ insertion     | `spacing`     |    **off**     | `می روم` → `می‌روم`, `کتاب ها` → `کتاب‌ها`                                                       |
+| Punctuation              | `punctuation` |    **off**     | `,` → `،`, `;` → `؛`, `?` → `؟` (only next to Persian-script letters, so `1,234` is untouched) |
 
 The complete character tables and every deliberate difference from other
 tools are listed in [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 ### Feature flags
 
-| Feature | Default | Description |
-|---|:---:|---|
-| `std` | yes | Uses the standard library. Disable it for `no_std` + `alloc` targets. |
-| `serde` | no | `Serialize` / `Deserialize` for `DigitStyle` and the normalizer options. |
+| Feature | Default | Description                                                              |
+|---------|:-------:|--------------------------------------------------------------------------|
+| `std`   |   yes   | Uses the standard library. Disable it for `no_std` + `alloc` targets.    |
+| `serde` |   no    | `Serialize` / `Deserialize` for `DigitStyle` and the normalizer options. |
 
 ```toml
 # no_std + alloc
@@ -260,14 +260,14 @@ assert_eq!(normalizer.normalize("۱۲۳ ٤٥٦"), "123 456");
 
 ### چه کارهایی انجام می‌دهد؟
 
-| مرحله | پیش‌فرض | مثال |
-|---|:---:|---|
-| یکسان‌سازی حروف عربی و فارسی | روشن | `ي` ← `ی` ، `ك` ← `ک` |
-| یکسان‌سازی ارقام | روشن (فارسی) | `123` ، `١٢٣` ، `۱۲۳` |
-| حذف اعراب و کشیده | روشن | `کِتاب` ← `کتاب` |
-| پاکسازی فاصله و نیم‌فاصله | روشن | حذف فاصله‌های تکراری و نیم‌فاصله‌ی نابه‌جا |
-| درج هوشمند نیم‌فاصله | **خاموش** | `می روم` ← `می‌روم` |
-| علائم نگارشی فارسی | **خاموش** | `,` ← `،` |
+| مرحله                       |    پیش‌فرض    | مثال                                   |
+|-----------------------------|:------------:|----------------------------------------|
+| یکسان‌سازی حروف عربی و فارسی |     روشن     | `ي` ← `ی` ، `ك` ← `ک`                  |
+| یکسان‌سازی ارقام             | روشن (فارسی) | `123` ، `١٢٣` ، `۱۲۳`                  |
+| حذف اعراب و کشیده           |     روشن     | `کِتاب` ← `کتاب`                        |
+| پاکسازی فاصله و نیم‌فاصله    |     روشن     | حذف فاصله‌های تکراری و نیم‌فاصله‌ی نابه‌جا |
+| درج هوشمند نیم‌فاصله         |  **خاموش**   | `می روم` ← `می‌روم`                     |
+| علائم نگارشی فارسی          |  **خاموش**   | `,` ← `،`                              |
 
 ### مشارکت
 

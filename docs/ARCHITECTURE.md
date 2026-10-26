@@ -32,7 +32,7 @@ them would break the "small, dependency-free" promise.
 - Tokenization and sentence splitting
 - Stemming and lemmatization
 - Spell correction
-- Transliteration and Chinglish conversion
+- Transliteration and Finglish conversion
 - Entity recognition and validators (national ID, IBAN, ...)
 - Calendar and date handling
 - Number-to-words conversion
@@ -68,15 +68,16 @@ The pipeline order is fixed:
 1. `letters::unify`
 2. `diacritics::strip`
 3. `digits::convert`
-4. `punctuation::normalize` (opt-in)
-5. `spacing::clean`
+4. `spacing::clean`
+5. `punctuation::normalize` (opt-in)
 6. `spacing::smart_zwnj` (opt-in)
 
 Rationale: letters are canonicalized first so later steps only reason about
 canonical forms. Removing diacritics and tatweel happens before spacing because
-their removal can bring characters together. Spacing runs last so it sees the
-final text. Smart ZWNJ insertion runs after cleanup so it never fights the
-cleanup rules.
+their removal can bring characters together. Spacing cleanup runs before
+punctuation because punctuation inspects the character before a mark, and
+cleanup can remove a ZWNJ in that position (see D-29). Smart ZWNJ insertion
+runs last, after cleanup, so it never fights the cleanup rules.
 
 Each step uses the same **fast-path pattern**: scan for the first character that
 needs changing; if none exists, return `Cow::Borrowed(input)`; otherwise
@@ -142,14 +143,14 @@ would add noise with nothing to report.
 
 ### D-08: Defaults
 
-| Step                           | Default               |
-|--------------------------------|-----------------------|
-| Letters (Arabic to Persian)    | on                    |
-| Diacritics and tatweel removal | on                    |
-| Digits                         | `DigitStyle::Persian` |
-| Space and ZWNJ cleanup         | on                    |
-| Smart ZWNJ insertion           | off                   |
-| Persian punctuation            | off                   |
+| Step | Default |
+|---|---|
+| Letters (Arabic to Persian) | on |
+| Diacritics and tatweel removal | on |
+| Digits | `DigitStyle::Persian` |
+| Space and ZWNJ cleanup | on |
+| Smart ZWNJ insertion | off |
+| Persian punctuation | off |
 
 **Rationale:** Defaults match what most Persian NLP tooling (notably Hazm)
 does, so results are familiar. Heuristic or context-dependent steps are opt-in
@@ -164,14 +165,14 @@ values are final for the 0.x series unless a new record supersedes this one.
 
 **Decision:**
 
-| From       | To         |
-|------------|------------|
+| From | To |
+|---|---|
 | `ي` U+064A | `ی` U+06CC |
 | `ى` U+0649 | `ی` U+06CC |
 | `ك` U+0643 | `ک` U+06A9 |
 | `ة` U+0629 | `ه` U+0647 |
 
-Alef and Hamza variants (`أ`, `إ`, `ٱ`, `ؤ`, `ئ`) are **not** unified.
+Alef and hamza variants (`أ`, `إ`, `ٱ`, `ؤ`, `ئ`) are **not** unified.
 **Rationale:** Those characters carry meaning in Persian words and an
 automatic merge would damage valid text. They can become opt-in later.
 
@@ -194,7 +195,7 @@ context-dependent and deferred.
 
 **Decision:** Collapse runs of the space character (U+0020) into one space. Tabs,
 newlines and no-break spaces are left unchanged. The text is not trimmed.
-**Rationale:** Conservative behavior avoids surprising callers who rely on online
+**Rationale:** Conservative behavior avoids surprising callers who rely on line
 structure. Callers can call `.trim()` themselves.
 
 ### D-13: ZWNJ cleanup rules
@@ -303,7 +304,7 @@ guarantees above take priority.
   once offline and checked in with a note about its origin. Running the tests
   never requires Python.
 - A `cargo-fuzz` target for the full pipeline.
-- Coverage is measured with `cargo-llvm-cov`; the goal is high coverage, but it
+- Coverage is measured with `cargo-llvm-cov`; the goal is high coverage but it
   is not a hard gate until the code stabilizes.
 
 ### D-24: Documentation standard
@@ -344,6 +345,17 @@ Commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`, `refactor:`, `perf:`).
 **Decision:** No `unsafe`, no regex, linear-time algorithms, and a fuzz target
 to guard totality. Vulnerabilities are reported privately as described in
 `SECURITY.md`.
+
+### D-29: Spacing cleanup runs before punctuation (amends section 3)
+
+**Decision:** The pipeline order is letters, diacritics, digits, spacing cleanup,
+punctuation, smart ZWNJ. The original order ran punctuation before cleanup.
+**Rationale:** Punctuation converts a mark only if the preceding non-space
+character is a letter. With the original order, `letter, space, ZWNJ, space,
+comma` was left alone by punctuation, then cleanup removed the ZWNJ, and a
+second run of the pipeline converted the comma. That violates idempotence
+(D-20). Running cleanup first makes both passes see the same text. A regression
+test covers this exact input.
 
 ---
 
