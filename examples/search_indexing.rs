@@ -52,5 +52,5 @@ fn main() {
     // Unknown words simply return nothing.
     let hits = search("خودکار");
     println!("خودکار  ->  {hits:?}");
-    assert!(hits.is_empty());
+    assert_eq!(hits, Vec::<&str>::new());
 }
