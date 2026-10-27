@@ -12,6 +12,8 @@ jobs:
   fuzz:
     name: cargo-fuzz (60 seconds)
     runs-on: ubuntu-latest
+    env:
+      RUSTUP_TOOLCHAIN: nightly
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@master
