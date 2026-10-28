@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 While the version is `0.x`, a breaking change bumps the minor version, and
 raising the minimum supported Rust version is also treated as a minor change.
 
-## [Unreleased]
+## [0.1.0] - 2026-10-28
 
 ### Added
 
