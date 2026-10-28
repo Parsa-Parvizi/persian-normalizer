@@ -30,4 +30,5 @@ raising the minimum supported Rust version is also treated as a minor change.
   `punctuation::normalize` have their final signatures but currently return the
   input unchanged.
 
-[Unreleased]: https://github.com/Parsa-Parvizi/persian-normalizer/commits/main
+[Unreleased]: https://github.com/Parsa-Parvizi/persian-normalizer/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Parsa-Parvizi/persian-normalizer/releases/tag/v0.1.0
