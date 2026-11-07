@@ -21,6 +21,7 @@ exclude = [
     "rust-toolchain.toml",
     ".editorconfig",
     ".gitignore",
+    "docs/architecture.mmd",
 ]
 
 [features]
