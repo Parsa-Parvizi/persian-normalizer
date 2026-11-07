@@ -1,0 +1,83 @@
+classDiagram
+    class src_Normalizer {
+        -unify_letters: bool
+        -remove_diacritics: bool
+        -digits: DigitStyle
+        -fix_spacing: bool
+        -smart_zwnj: bool
+        -punctuation: bool
+        +builder() src_NormalizerBuilder
+        +normalize(text: &'a str) Cow~'a, str~
+    }
+    class src_Default {
+        +default() Self
+    }
+    class src_NormalizerBuilder {
+        -config: src_Normalizer
+        +unify_letters(self, enabled: bool) Self
+        +remove_diacritics(self, enabled: bool) Self
+        +digits(self, style: DigitStyle) Self
+        +fix_spacing(self, enabled: bool) Self
+        +smart_zwnj(self, enabled: bool) Self
+        +punctuation(self, enabled: bool) Self
+        +build(self) src_Normalizer
+    }
+    class target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_Normalizer {
+        -unify_letters: bool
+        -remove_diacritics: bool
+        -digits: DigitStyle
+        -fix_spacing: bool
+        -smart_zwnj: bool
+        -punctuation: bool
+        +builder() target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_NormalizerBuilder
+        +normalize(text: &'a str) Cow~'a, str~
+    }
+    class target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_Default {
+        +default() Self
+    }
+    class target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_NormalizerBuilder {
+        -config: target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_Normalizer
+        +unify_letters(self, enabled: bool) Self
+        +remove_diacritics(self, enabled: bool) Self
+        +digits(self, style: DigitStyle) Self
+        +fix_spacing(self, enabled: bool) Self
+        +smart_zwnj(self, enabled: bool) Self
+        +punctuation(self, enabled: bool) Self
+        +build(self) target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_Normalizer
+    }
+    class tests_Status {
+        +label(self) &'static str
+    }
+    class tests_Row {
+        -section: &'static str
+        -name: String
+        -status: tests_Status
+        -detail: String
+    }
+    class tests_Report {
+        -rows: Vec~tests_Row~
+        +add(section: &'static str, name: &str, status: tests_Status, detail: impl Into~String~) void
+        +check(section: &'static str, name: &str, ok: bool, detail: impl Into~String~) void
+        +expect_eq(section: &'static str, name: &str, actual: &str, expected: &str) void
+        +expect_borrowed(section: &'static str, name: &str, value: &Cow~'_, str~, want_borrowed: bool) void
+        +count(status: tests_Status) usize
+    }
+    class tests_Outcome {
+        -ok: bool
+        -code: Option~i32~
+        -stdout: String
+        -stderr: String
+        -secs: f64
+    }
+    class tests_Lcg {
+        +next_u64() u64
+        +below(n: usize) usize
+    }
+    src_Normalizer ..> src_NormalizerBuilder
+    src_NormalizerBuilder --> src_Normalizer
+    src_NormalizerBuilder ..> src_Normalizer
+    target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_Normalizer ..> target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_NormalizerBuilder
+    target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_NormalizerBuilder --> target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_Normalizer
+    target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_NormalizerBuilder ..> target_tmp_e2e_target_package_persian-normalizer-0_1_0_src_Normalizer
+    tests_Row --> tests_Status
+    tests_Report --> tests_Row
