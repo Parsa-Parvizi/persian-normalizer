@@ -9,7 +9,7 @@ raising the minimum supported Rust version is also treated as a minor change.
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-11-03
+## [0.1.0] - 2026-11-08
 
 First release.
 
