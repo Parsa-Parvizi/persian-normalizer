@@ -113,19 +113,18 @@ jobs:
 
   # Enable after the first release is published on crates.io. The check compares
   # the public API with the latest published version.
-  #
-  # semver:
-  #   name: SemVer
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v7
-  #     - uses: obi1kenobi/cargo-semver-checks-action@v2
+  semver:
+   name: SemVer
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v7
+     - uses: obi1kenobi/cargo-semver-checks-action@v2
 
   # A single job to require in branch protection rules.
   ci-ok:
     name: CI OK
     if: always()
-    needs: [fmt, clippy, test, msrv, no-std, docs]
+    needs: [fmt, clippy, test, msrv, no-std, docs, semver]
     runs-on: ubuntu-latest
     steps:
       - name: Verify all jobs succeeded
